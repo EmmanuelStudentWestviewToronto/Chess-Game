@@ -63,5 +63,4 @@ class Rook(Piece):
 
 
 rook = Rook(1, 1, "white")
-rook2 = Rook(3, 5, "black")
-print(rook2.image)
+print(rook.image)
