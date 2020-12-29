@@ -4,3 +4,6 @@
 pieces/__pycache__/__init__.cpython-39.pyc
 pieces/__pycache__/piece.cpython-39.pyc
 pieces/__pycache__/rook.cpython-39.pyc
+__pycache__/board.cpython-39.pyc
+__pycache__/constants.cpython-39.pyc
+__pycache__/ui.cpython-39.pyc

@@ -1,4 +1,5 @@
 from .piece import Piece
+from tkinter import PhotoImage
 
 
 class Rook(Piece):
@@ -9,7 +10,7 @@ class Rook(Piece):
 
     def set_image(self):
         color_num = 0 if self.player == "white" else 1
-        self.image = f"img/{color_num}0{self.type}.png"
+        self.image = f"img\\{color_num}0{self.type}.png"
 
     def move(self, destination):
         self.position = destination
@@ -20,3 +21,8 @@ class Rook(Piece):
     def draw_path(self, start, end):
         x_start, y_start = start
         x_end, y_end = end
+
+    def draw_self(self, canvas, x, y):
+        img = PhotoImage(file=self.image)
+        canvas.create_image(x, y, image=img)
+        self.image = img
