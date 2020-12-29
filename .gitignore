@@ -1,3 +1,6 @@
 .vscode/launch.json
 .vscode/settings.json
 .vscode/tasks.json
+pieces/__pycache__/__init__.cpython-39.pyc
+pieces/__pycache__/piece.cpython-39.pyc
+pieces/__pycache__/rook.cpython-39.pyc
