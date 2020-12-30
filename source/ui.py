@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import Tk, Frame, Canvas, BOTH, TOP
 from pieces.piece import Piece
 from constants import WIDTH, HEIGHT, MARGIN, CELL_WIDTH, BACKGROUND_COLOR, WHITE, BLACK
 
@@ -111,6 +111,8 @@ class ChessUI(Frame):
                     temp = self.board.get_selected_piece()
                     if temp is not None:
                         # todo : if temp.is_valid_move((x_grid_position, y_grid_position)):
+                        # self.board.handle_piece_move(
+                        #     (temp.x, temp.y), (x_grid_position, y_grid_position))
                         self.board.board[temp.x][temp.y] = 0
                         temp.move((x_grid_position, y_grid_position))
                         self.board.board[x_grid_position][y_grid_position] = temp

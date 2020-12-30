@@ -33,6 +33,9 @@ class Board:
                         return temp
         return None
 
+    def handle_piece_move(self, start, end):
+        pass
+
     def populate_board(self):
         # black pieces
         self.board[0][0] = Rook(0, 0, "black")
