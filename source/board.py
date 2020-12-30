@@ -15,7 +15,15 @@ class Board:
                       for r in range(self.columns)]
         self.turn = "white"  # white starts
         self.turn_count = 0
+        self.game_running = False
         self.populate_board()
+
+    def is_game_running(self):
+        return True if self.game_running else False
+
+    def run_game(self):
+        self.game_running = True
+        # todo start timers etc...
 
     def change_turn(self):
         if self.turn == "white":

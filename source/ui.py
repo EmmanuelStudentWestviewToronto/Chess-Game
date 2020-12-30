@@ -1,4 +1,5 @@
-from tkinter import Tk, Frame, Canvas, BOTH, TOP
+from tkinter import Tk, Frame, Canvas, BOTH, TOP, Misc
+import time
 from pieces.piece import Piece
 from constants import WIDTH, HEIGHT, MARGIN, CELL_WIDTH, BACKGROUND_COLOR, WHITE, BLACK
 
@@ -19,9 +20,27 @@ class ChessUI(Frame):
         self.canvas = Canvas(self, width=WIDTH, height=HEIGHT,
                              background=BACKGROUND_COLOR)
         self.canvas.pack(fill=BOTH, side=TOP)
-        self.canvas.bind("<Button-1>", self.clicked)
 
+        self.draw_start_screen()
+
+    def draw_start_screen(self):
+        self.draw_grid()
+        self.draw_squares()
+        self.start_canvas = Canvas(
+            self, width=WIDTH-100, height=HEIGHT//6, background="#444444")
+
+        self.start_canvas.create_text(350, 60,
+                                      text="Click here to start...", font="comicsans 36", fill="#ffffff")
+        self.start_canvas.place(x=50, y=HEIGHT//2.5)
+        Misc.lift(self.start_canvas)
+        self.start_canvas.bind("<Button-1>", self.load_gameui)
+
+    def load_gameui(self, event):
+        self.board.run_game()
+        self.start_canvas.destroy()
+        time.sleep(0.3)
         self.draw_board()
+        self.canvas.bind("<Button-1>", self.clicked)
 
     def draw_board(self):
         self.draw_grid()
