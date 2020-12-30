@@ -22,19 +22,28 @@ class Board:
             self.turn = "black"
         else:
             self.turn = "white"
+        self.turn_count += 1
 
     def get_selected_piece(self):
         for i in range(self.rows):
             for j in range(self.columns):
                 if isinstance(self.board[i][j], Piece):
-                    # check if we have a piece selected atm
                     if self.board[i][j].is_selected():
                         temp = self.board[i][j]
                         return temp
         return None
 
-    def handle_piece_move(self, start, end):
-        pass
+    def unselect_all(self):
+        for i in range(self.rows):
+            for j in range(self.columns):
+                if isinstance(self.board[i][j], Piece):
+                    self.board[i][j].unselect()
+
+    def handle_piece_move(self, piece, destination):
+        self.board[piece.x][piece.y] = 0
+        piece.move((destination[0], destination[1]))
+        self.board[destination[0]][destination[1]] = piece
+        self.change_turn()
 
     def populate_board(self):
         # black pieces

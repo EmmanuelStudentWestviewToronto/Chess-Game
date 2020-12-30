@@ -28,6 +28,7 @@ class ChessUI(Frame):
         self.draw_squares()
         self.draw_pieces()
         self.draw_labels()
+        self.update()
 
     def draw_grid(self):
         for i in range(self.board.rows+1):
@@ -70,6 +71,7 @@ class ChessUI(Frame):
                                                 (MARGIN+x*CELL_WIDTH)+CELL_WIDTH-5, (MARGIN+y*CELL_WIDTH)+CELL_WIDTH-5, outline="#ff00ff", tag="select_oval")
 
     def draw_labels(self):
+        self.canvas.delete("turn_text")
         # turn text
         self.canvas.create_text(WIDTH//2, HEIGHT-MARGIN//2,
                                 text=f"{self.board.turn} Turn".upper(), tag="turn_text", font="comicsans 30")
@@ -82,6 +84,7 @@ class ChessUI(Frame):
 
     def clicked(self, event):
         x, y, = event.x, event.y
+        # if we clicked on the board
         if MARGIN < x < WIDTH-MARGIN and MARGIN < y < WIDTH-MARGIN:
             x_grid_position = int(x//CELL_WIDTH-1)
             y_grid_position = int(y//CELL_WIDTH-1)
@@ -95,36 +98,27 @@ class ChessUI(Frame):
                         )
                     # if the piece is not selected...
                     else:
-                        for i in range(self.board.rows):
-                            for j in range(self.board.columns):
-                                if isinstance(self.board.board[i][j], Piece):
-                                    # ... we unselect every other friendly piece
-                                    self.board.board[i][j].unselect()
+                        # ... we unselect every other piece
+                        self.board.unselect_all()
                         self.canvas.delete("select-oval")
                         # and select the new one
                         self.board.board[x_grid_position][y_grid_position].select(
                         )
                     self.draw_board()
-                    self.update()
                 # if turn and color don't match
                 else:
+                    # check if we have a piece selected atm
                     temp = self.board.get_selected_piece()
                     if temp is not None:
                         # todo : if temp.is_valid_move((x_grid_position, y_grid_position)):
-                        # self.board.handle_piece_move(
-                        #     (temp.x, temp.y), (x_grid_position, y_grid_position))
-                        self.board.board[temp.x][temp.y] = 0
-                        temp.move((x_grid_position, y_grid_position))
-                        self.board.board[x_grid_position][y_grid_position] = temp
+                        self.board.handle_piece_move(
+                            temp, (x_grid_position, y_grid_position))
                         self.draw_board()
-                        self.update()
             # if we clicked on a free cell
             else:
                 temp = self.board.get_selected_piece()
                 if temp is not None:
                     # todo : if temp.is_valid_move((x_grid_position, y_grid_position)):
-                    self.board.board[temp.x][temp.y] = 0
-                    temp.move((x_grid_position, y_grid_position))
-                    self.board.board[x_grid_position][y_grid_position] = temp
+                    self.board.handle_piece_move(
+                        temp, (x_grid_position, y_grid_position))
                     self.draw_board()
-                    self.update()
