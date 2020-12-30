@@ -1,5 +1,6 @@
-from tkinter import Tk, Frame, Canvas, BOTH, TOP, Misc
+from tkinter import Tk, Frame, Canvas, BOTH, TOP, Misc, Label
 import time
+import threading
 from pieces.piece import Piece
 from constants import WIDTH, HEIGHT, MARGIN, CELL_WIDTH, BACKGROUND_COLOR, WHITE, BLACK
 
@@ -10,6 +11,7 @@ class ChessUI(Frame):
         self.board = board
         Frame.__init__(self, self.parent)
 
+        self.t = threading.Thread(target=self.update_timer)
         self.initialize()
 
     def initialize(self):
@@ -20,6 +22,14 @@ class ChessUI(Frame):
         self.canvas = Canvas(self, width=WIDTH, height=HEIGHT,
                              background=BACKGROUND_COLOR)
         self.canvas.pack(fill=BOTH, side=TOP)
+
+        self.wtime_label = Label(self.canvas, text="Time: 00:00", font=(
+            'comicsans', 20), background=BACKGROUND_COLOR)
+        self.wtime_label.place(x=WIDTH-MARGIN*2-10, y=HEIGHT-MARGIN//2-20)
+
+        self.btime_label = Label(self.canvas, text="Time: 00:00", font=(
+            'comicsans', 20), background=BACKGROUND_COLOR)
+        self.btime_label.place(x=WIDTH-MARGIN*2-10, y=MARGIN//2-20)
 
         self.draw_start_screen()
 
@@ -41,12 +51,27 @@ class ChessUI(Frame):
         time.sleep(0.3)
         self.draw_board()
         self.canvas.bind("<Button-1>", self.clicked)
+        self.t.start()
 
     def draw_board(self):
-        self.draw_grid()
-        self.draw_squares()
-        self.draw_pieces()
-        self.draw_labels()
+        if not self.board.is_winner:
+            self.draw_grid()
+            self.draw_squares()
+            self.draw_pieces()
+            self.draw_labels()
+        else:
+            self.canvas.unbind("<Button-1>")
+            winner = "black" if self.board.white_time <= 0 else "white"
+            self.draw_grid()
+            self.draw_squares()
+            self.end_canvas = Canvas(
+                self, width=WIDTH-100, height=HEIGHT//6, background="#444444")
+
+            self.end_canvas.create_text(350, 60,
+                                        text=f"{winner} won!".upper(), font="comicsans 36", fill="#ffffff")
+            self.end_canvas.place(x=50, y=HEIGHT//2.5)
+            Misc.lift(self.end_canvas)
+
         self.update()
 
     def draw_grid(self):
@@ -95,11 +120,31 @@ class ChessUI(Frame):
         self.canvas.create_text(WIDTH//2, HEIGHT-MARGIN//2,
                                 text=f"{self.board.turn} Turn".upper(), tag="turn_text", font="comicsans 30")
 
-        # timers
-        self.canvas.create_text(WIDTH-MARGIN*2, MARGIN//2,
-                                text=f"Time: 10:00", tag="black_timer", font="comicsans 20")
-        self.canvas.create_text(WIDTH-MARGIN*2, HEIGHT-MARGIN//2,
-                                text=f"Time: 10:00", tag="white_timer", font="comicsans 20")
+    def update_timer(self):
+        if self.board.turn == "white":
+            timer = self.format_time(self.board.white_time)
+            self.wtime_label["text"] = timer
+            self.board.white_time -= 1
+        else:
+            timer = self.format_time(self.board.black_time)
+            self.btime_label["text"] = timer
+            self.board.black_time -= 1
+
+        self.after(1000, self.update_timer)
+
+    def format_time(self, timer):
+        if timer > 0:
+            minutes = timer // 60
+            seconds = timer % 60
+            if seconds > 9:
+                formatted_string = f"Time: {str(minutes)}:{str(seconds)}"
+            else:
+                formatted_string = f"Time: {str(minutes)}:0{str(seconds)}"
+        else:
+            formatted_string = "Times up!"
+            self.board.is_winner = True
+            self.draw_board()
+        return formatted_string
 
     def clicked(self, event):
         x, y, = event.x, event.y
@@ -132,6 +177,10 @@ class ChessUI(Frame):
                         # todo : if temp.is_valid_move((x_grid_position, y_grid_position)):
                         self.board.handle_piece_move(
                             temp, (x_grid_position, y_grid_position))
+                        try:
+                            self.t.start()
+                        except RuntimeError:
+                            pass
                         self.draw_board()
             # if we clicked on a free cell
             else:
@@ -140,4 +189,8 @@ class ChessUI(Frame):
                     # todo : if temp.is_valid_move((x_grid_position, y_grid_position)):
                     self.board.handle_piece_move(
                         temp, (x_grid_position, y_grid_position))
+                    try:
+                        self.t.start()
+                    except RuntimeError:
+                        pass
                     self.draw_board()

@@ -8,7 +8,7 @@ from pieces.piece import Piece
 
 
 class Board:
-    def __init__(self):
+    def __init__(self, timer):
         self.rows = 8
         self.columns = 8
         self.board = [[0 for c in range(self.rows)]
@@ -16,6 +16,9 @@ class Board:
         self.turn = "white"  # white starts
         self.turn_count = 0
         self.game_running = False
+        self.is_winner = False
+        self.white_time = timer
+        self.black_time = timer
         self.populate_board()
 
     def is_game_running(self):
@@ -23,7 +26,6 @@ class Board:
 
     def run_game(self):
         self.game_running = True
-        # todo start timers etc...
 
     def change_turn(self):
         if self.turn == "white":
