@@ -2,10 +2,10 @@ from .piece import Piece
 from tkinter import PhotoImage
 
 
-class Rook(Piece):
+class Pawn(Piece):
     def __init__(self, x, y, player):
         super().__init__(x=x, y=y, player=player)
-        self.type = 3
+        self.type = 0
         self.set_image()
 
     def set_image(self):

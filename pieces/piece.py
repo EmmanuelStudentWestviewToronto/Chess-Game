@@ -13,10 +13,8 @@ class Piece(ABC):
         self.type = -1
         self.player = player
         self.image = None
-
-    @abstractmethod
-    def move(self, destination):
-        pass
+        self.image_garbo = None
+        self.selected = False
 
     @abstractmethod
     def is_valid_move(self, destination):
@@ -28,3 +26,17 @@ class Piece(ABC):
 
     def get_type(self):
         return self.type
+
+    def select(self):
+        self.selected = True
+
+    def unselect(self):
+        self.selected = False
+
+    def is_selected(self):
+        return True if self.selected else False
+
+    def move(self, destination):
+        self.position = destination
+        self.x, self.y = self.position
+        self.unselect()
