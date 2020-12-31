@@ -14,8 +14,3 @@ class King(Piece):
 
     def get_valid_moves(self, board):
         pass
-
-    def draw_self(self, canvas, x, y):
-        img = PhotoImage(file=self.image)
-        canvas.create_image(x, y, image=img)
-        self.image_garbo = img
