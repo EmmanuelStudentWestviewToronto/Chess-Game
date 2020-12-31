@@ -13,4 +13,23 @@ class Queen(Piece):
         self.image = f"img\\{color_num}0{self.type}.png"
 
     def get_valid_moves(self, board):
-        pass
+        valid_moves = []
+        moves = [[(self.x, self.y-j) for j in range(1, 8)],  # | up
+                 [(self.x+j, self.y) for j in range(1, 8)],  # -- right
+                 [(self.x-j, self.y) for j in range(1, 8)],  # -- left
+                 [(self.x, self.y+j) for j in range(1, 8)],  # | down
+                 [(self.x-j, self.y-j) for j in range(1, 8)],  # \ up-left
+                 [(self.x+j, self.y-j) for j in range(1, 8)],  # / up-right
+                 [(self.x-j, self.y+j) for j in range(1, 8)],  # / down-left
+                 [(self.x+j, self.y+j) for j in range(1, 8)]  # \ down-right
+                 ]
+        for directions in moves:
+            for move in directions:
+                if board.move_within_bounds(move):
+                    if board.cell_is_piece(move):
+                        if board.board[move[0]][move[1]].player != board.turn:
+                            valid_moves.append(move)
+                        break
+                    valid_moves.append(move)
+
+        return valid_moves
