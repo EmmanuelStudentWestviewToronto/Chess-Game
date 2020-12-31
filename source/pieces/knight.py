@@ -12,8 +12,8 @@ class Knight(Piece):
         color_num = 0 if self.player == "white" else 1
         self.image = f"img\\{color_num}0{self.type}.png"
 
-    def is_valid_move(self, destination):
-        x_destination, y_destination = destination
+    def get_valid_moves(self, board):
+        pass
 
     def draw_path(self, start, end):
         x_start, y_start = start

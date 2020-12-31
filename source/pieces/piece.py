@@ -17,7 +17,7 @@ class Piece(ABC):
         self.selected = False
 
     @abstractmethod
-    def is_valid_move(self, destination):
+    def get_valid_moves(self, board):
         pass
 
     @abstractmethod

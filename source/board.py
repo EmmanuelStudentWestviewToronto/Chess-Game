@@ -52,6 +52,10 @@ class Board:
     def handle_piece_move(self, piece, destination):
         self.board[piece.x][piece.y] = 0
         piece.move((destination[0], destination[1]))
+        if isinstance(piece, Pawn) and piece.player == "white" and destination[1] == 0:
+            piece = Queen(destination[0], destination[1], "white")
+        if isinstance(piece, Pawn) and piece.player == "black" and destination[1] == 7:
+            piece = Queen(destination[0], destination[1], "black")
         self.board[destination[0]][destination[1]] = piece
         self.change_turn()
 
@@ -67,10 +71,8 @@ class Board:
         self.board[7][0] = Rook(7, 0, "black")
         for i in range(8):
             self.board[i][1] = Pawn(i, 1, "black")
+            self.board[i][6] = Pawn(i, 6, "white")
 
-        # white pieces
-        for j in range(8):
-            self.board[j][6] = Pawn(j, 6, "white")
         self.board[0][7] = Rook(0, 7, "white")
         self.board[1][7] = Knight(1, 7, "white")
         self.board[2][7] = Bishop(2, 7, "white")

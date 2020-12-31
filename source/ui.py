@@ -120,6 +120,12 @@ class ChessUI(Frame):
         self.canvas.create_text(WIDTH//2, HEIGHT-MARGIN//2,
                                 text=f"{self.board.turn} Turn".upper(), tag="turn_text", font="comicsans 30")
 
+    def draw_moves(self, moves):
+        if len(moves) > 0:
+            for move in moves:
+                self.canvas.create_oval(MARGIN+move[0]*CELL_WIDTH+30, MARGIN+move[1]*CELL_WIDTH+30,
+                                        MARGIN+move[0]*CELL_WIDTH+CELL_WIDTH-30, MARGIN+move[1]*CELL_WIDTH+CELL_WIDTH-30, fill="#ff00ff")
+
     def update_timer(self):
         if self.board.turn == "white":
             timer = self.format_time(self.board.white_time)
@@ -168,13 +174,31 @@ class ChessUI(Frame):
                         # and select the new one
                         self.board.board[x_grid_position][y_grid_position].select(
                         )
+                        moves = self.board.board[x_grid_position][y_grid_position].get_valid_moves(
+                            self.board)
+
                     self.draw_board()
+                    self.draw_moves(moves)
                 # if turn and color don't match
                 else:
                     # check if we have a piece selected atm
                     temp = self.board.get_selected_piece()
                     if temp is not None:
-                        # todo : if temp.is_valid_move((x_grid_position, y_grid_position)):
+                        valid = temp.get_valid_moves(self.board)
+                        if (x_grid_position, y_grid_position) in valid:
+                            self.board.handle_piece_move(
+                                temp, (x_grid_position, y_grid_position))
+                            try:
+                                self.t.start()
+                            except RuntimeError:
+                                pass
+                            self.draw_board()
+            # if we clicked on a free cell
+            else:
+                temp = self.board.get_selected_piece()
+                if temp is not None:
+                    valid = temp.get_valid_moves(self.board)
+                    if (x_grid_position, y_grid_position) in valid:
                         self.board.handle_piece_move(
                             temp, (x_grid_position, y_grid_position))
                         try:
@@ -182,15 +206,3 @@ class ChessUI(Frame):
                         except RuntimeError:
                             pass
                         self.draw_board()
-            # if we clicked on a free cell
-            else:
-                temp = self.board.get_selected_piece()
-                if temp is not None:
-                    # todo : if temp.is_valid_move((x_grid_position, y_grid_position)):
-                    self.board.handle_piece_move(
-                        temp, (x_grid_position, y_grid_position))
-                    try:
-                        self.t.start()
-                    except RuntimeError:
-                        pass
-                    self.draw_board()
