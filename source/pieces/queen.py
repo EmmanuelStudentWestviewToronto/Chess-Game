@@ -1,5 +1,4 @@
 from .piece import Piece
-from tkinter import PhotoImage
 
 
 class Queen(Piece):

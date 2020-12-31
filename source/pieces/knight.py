@@ -1,4 +1,3 @@
-from tkinter import PhotoImage
 from .piece import Piece
 
 
