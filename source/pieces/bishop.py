@@ -15,10 +15,6 @@ class Bishop(Piece):
     def get_valid_moves(self, board):
         pass
 
-    def draw_path(self, start, end):
-        x_start, y_start = start
-        x_end, y_end = end
-
     def draw_self(self, canvas, x, y):
         img = PhotoImage(file=self.image)
         canvas.create_image(x, y, image=img)

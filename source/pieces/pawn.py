@@ -1,5 +1,5 @@
-from .piece import Piece
 from tkinter import PhotoImage
+from .piece import Piece
 
 
 class Pawn(Piece):
@@ -47,13 +47,3 @@ class Pawn(Piece):
                         valid_moves.append(moves_b[i])
 
         return valid_moves
-
-    def draw_path(self, start, end):
-        # x_start, y_start = start
-        # x_end, y_end = end
-        pass
-
-    def draw_self(self, canvas, x, y):
-        img = PhotoImage(file=self.image)
-        canvas.create_image(x, y, image=img)
-        self.image_garbo = img

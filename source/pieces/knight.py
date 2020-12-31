@@ -1,5 +1,5 @@
-from .piece import Piece
 from tkinter import PhotoImage
+from .piece import Piece
 
 
 class Knight(Piece):
@@ -13,13 +13,17 @@ class Knight(Piece):
         self.image = f"img\\{color_num}0{self.type}.png"
 
     def get_valid_moves(self, board):
-        pass
+        valid_moves = []
+        moves = [(self.x-1, self.y-2), (self.x+1, self.y-2),  # up and left/right
+                 (self.x-1, self.y+2), (self.x+1, self.y+2),  # down and left/right
+                 (self.x+2, self.y-1), (self.x+2, self.y+1),  # right and up/down
+                 (self.x-2, self.y-1), (self.x-2, self.y + 1)]  # left and up/down
 
-    def draw_path(self, start, end):
-        x_start, y_start = start
-        x_end, y_end = end
+        for move in moves:
+            if board.move_within_bounds(move):
+                if not board.cell_is_piece(move):
+                    valid_moves.append(move)
+                if (board.cell_is_piece(move)) and board.board[move[0]][move[1]].player != board.turn:
+                    valid_moves.append(move)
 
-    def draw_self(self, canvas, x, y):
-        img = PhotoImage(file=self.image)
-        canvas.create_image(x, y, image=img)
-        self.image_garbo = img
+        return valid_moves
