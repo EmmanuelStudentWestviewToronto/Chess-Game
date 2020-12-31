@@ -6,3 +6,4 @@ CELL_WIDTH = (WIDTH - MARGIN*2)/8
 BLACK = "#2e2e2e"
 WHITE = "#ffffff"
 BACKGROUND_COLOR = "#99c0ff"
+SELECTED_COLOR = "#3ebf32"

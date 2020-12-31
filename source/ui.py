@@ -2,7 +2,7 @@ from tkinter import Tk, Frame, Canvas, BOTH, TOP, Misc, Label
 import time
 import threading
 from pieces.piece import Piece
-from constants import WIDTH, HEIGHT, MARGIN, CELL_WIDTH, BACKGROUND_COLOR, WHITE, BLACK
+from constants import WIDTH, HEIGHT, MARGIN, CELL_WIDTH, BACKGROUND_COLOR, WHITE, BLACK, SELECTED_COLOR
 
 
 class ChessUI(Frame):
@@ -106,13 +106,13 @@ class ChessUI(Frame):
     def draw_pieces(self):
         for i in range(self.board.rows):
             for j in range(self.board.columns):
-                if isinstance(self.board.board[i][j], Piece):
+                if self.board.cell_is_piece((i, j)):
                     x, y = self.board.board[i][j].position
                     self.board.board[i][j].draw_self(
                         self.canvas, (MARGIN+x*CELL_WIDTH)+CELL_WIDTH//2, (MARGIN+y*CELL_WIDTH)+CELL_WIDTH//2)
                     if self.board.board[i][j].is_selected():
                         self.canvas.create_oval((MARGIN+x*CELL_WIDTH)+5, (MARGIN+y*CELL_WIDTH)+5,
-                                                (MARGIN+x*CELL_WIDTH)+CELL_WIDTH-5, (MARGIN+y*CELL_WIDTH)+CELL_WIDTH-5, outline="#ff00ff", tag="select_oval")
+                                                (MARGIN+x*CELL_WIDTH)+CELL_WIDTH-5, (MARGIN+y*CELL_WIDTH)+CELL_WIDTH-5, outline=SELECTED_COLOR, tag="select_oval")
 
     def draw_labels(self):
         self.canvas.delete("turn_text")
@@ -124,7 +124,7 @@ class ChessUI(Frame):
         if len(moves) > 0:
             for move in moves:
                 self.canvas.create_oval(MARGIN+move[0]*CELL_WIDTH+30, MARGIN+move[1]*CELL_WIDTH+30,
-                                        MARGIN+move[0]*CELL_WIDTH+CELL_WIDTH-30, MARGIN+move[1]*CELL_WIDTH+CELL_WIDTH-30, fill="#ff00ff")
+                                        MARGIN+move[0]*CELL_WIDTH+CELL_WIDTH-30, MARGIN+move[1]*CELL_WIDTH+CELL_WIDTH-30, fill=SELECTED_COLOR)
 
     def update_timer(self):
         if self.board.turn == "white":
@@ -149,6 +149,7 @@ class ChessUI(Frame):
         else:
             formatted_string = "Times up!"
             self.board.is_winner = True
+            self.board.stop_game()
             self.draw_board()
         return formatted_string
 
@@ -159,7 +160,7 @@ class ChessUI(Frame):
             x_grid_position = int(x//CELL_WIDTH-1)
             y_grid_position = int(y//CELL_WIDTH-1)
             # if we clicked on a piece
-            if isinstance(self.board.board[x_grid_position][y_grid_position], Piece):
+            if self.board.cell_is_piece((x_grid_position, y_grid_position)):
                 # check if turn and piece color match
                 if self.board.board[x_grid_position][y_grid_position].player == self.board.turn:
                     # it the piece is selected, we unselect it
@@ -178,7 +179,10 @@ class ChessUI(Frame):
                             self.board)
 
                     self.draw_board()
-                    self.draw_moves(moves)
+                    try:
+                        self.draw_moves(moves)
+                    except UnboundLocalError:
+                        pass
                 # if turn and color don't match
                 else:
                     # check if we have a piece selected atm

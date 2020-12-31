@@ -27,6 +27,9 @@ class Board:
     def run_game(self):
         self.game_running = True
 
+    def stop_game(self):
+        self.game_running = False
+
     def change_turn(self):
         if self.turn == "white":
             self.turn = "black"
@@ -34,10 +37,20 @@ class Board:
             self.turn = "white"
         self.turn_count += 1
 
+    def move_within_bounds(self, move):
+        if (-1 < move[0] < self.rows) and (-1 < move[1] < self.columns):
+            return True
+        return False
+
+    def cell_is_piece(self, cell):
+        if isinstance(self.board[cell[0]][cell[1]], Piece):
+            return True
+        return False
+
     def get_selected_piece(self):
         for i in range(self.rows):
             for j in range(self.columns):
-                if isinstance(self.board[i][j], Piece):
+                if self.cell_is_piece((i, j)):
                     if self.board[i][j].is_selected():
                         temp = self.board[i][j]
                         return temp
@@ -46,7 +59,7 @@ class Board:
     def unselect_all(self):
         for i in range(self.rows):
             for j in range(self.columns):
-                if isinstance(self.board[i][j], Piece):
+                if self.cell_is_piece((i, j)):
                     self.board[i][j].unselect()
 
     def handle_piece_move(self, piece, destination):

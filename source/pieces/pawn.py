@@ -20,37 +20,38 @@ class Pawn(Piece):
                    (self.x-1, self.y+1), (self.x + 1, self.y + 1)]
 
         if self.player == "white":
-            if (-1 < moves_w[0][0] < 8) and (-1 < moves_w[0][1] < 8):
-                if not isinstance(board.board[moves_w[0][0]][moves_w[0][1]], Piece):
+            if board.move_within_bounds(moves_w[0]):
+                if not board.cell_is_piece((moves_w[0][0], moves_w[0][1])):
                     valid_moves.append(moves_w[0])
-            if (-1 < moves_w[1][0] < 8) and (-1 < moves_w[1][1] < 8):
-                if (not isinstance(board.board[moves_w[1][0]][moves_w[1][1]], Piece)
-                    ) and not isinstance(board.board[self.x][self.y-1], Piece) and self.y == 6:
+            if board.move_within_bounds(moves_w[1]):
+                if not board.cell_is_piece((moves_w[1][0], moves_w[1][1])
+                                           ) and not board.cell_is_piece((self.x, self.y-1)) and self.y == 6:
                     valid_moves.append(moves_w[1])
             for i in range(2, len(moves_w)):
-                if (-1 < moves_w[i][0] < 8) and (-1 < moves_w[i][1] < 8):
-                    if (isinstance(board.board[moves_w[i][0]][moves_w[i][1]], Piece
-                                   ) and board.board[moves_w[i][0]][moves_w[i][1]].player != board.turn):
+                if board.move_within_bounds(moves_w[i]):
+                    if (board.cell_is_piece((moves_w[i][0], moves_w[i][1])
+                                            ) and board.board[moves_w[i][0]][moves_w[i][1]].player != board.turn):
                         valid_moves.append(moves_w[i])
         else:
-            if (-1 < moves_b[0][0] < 8) and (-1 < moves_b[0][1] < 8):
-                if not isinstance(board.board[moves_b[0][0]][moves_b[0][1]], Piece):
+            if board.move_within_bounds(moves_b[0]):
+                if not board.cell_is_piece((moves_b[0][0], moves_b[0][1])):
                     valid_moves.append(moves_b[0])
-            if (-1 < moves_b[1][0] < 8) and (-1 < moves_b[1][1] < 8):
-                if (not isinstance(board.board[moves_b[1][0]][moves_b[1][1]], Piece)
-                    ) and not isinstance(board.board[self.x][self.y+1], Piece) and self.y == 1:
+            if board.move_within_bounds(moves_b[1]):
+                if not board.cell_is_piece((moves_b[1][0], moves_b[1][1])
+                                           ) and not board.cell_is_piece((self.x, self.y+1)) and self.y == 1:
                     valid_moves.append(moves_b[1])
             for i in range(2, len(moves_b)):
-                if (-1 < moves_b[i][0] < 8) and (-1 < moves_b[i][1] < 8):
-                    if (isinstance(board.board[moves_b[i][0]][moves_b[i][1]], Piece
-                                   ) and board.board[moves_b[i][0]][moves_b[i][1]].player != board.turn):
+                if board.move_within_bounds(moves_b[i]):
+                    if (board.cell_is_piece((moves_b[i][0], moves_b[i][1])
+                                            ) and board.board[moves_b[i][0]][moves_b[i][1]].player != board.turn):
                         valid_moves.append(moves_b[i])
 
         return valid_moves
 
     def draw_path(self, start, end):
-        x_start, y_start = start
-        x_end, y_end = end
+        # x_start, y_start = start
+        # x_end, y_end = end
+        pass
 
     def draw_self(self, canvas, x, y):
         img = PhotoImage(file=self.image)
