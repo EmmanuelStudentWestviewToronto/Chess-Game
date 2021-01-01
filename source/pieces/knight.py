@@ -22,7 +22,7 @@ class Knight(Piece):
             if board.move_within_bounds(move):
                 if not board.cell_is_piece(move):
                     valid_moves.append(move)
-                if (board.cell_is_piece(move)) and board.board[move[0]][move[1]].player != board.turn:
+                if (board.cell_is_piece(move)) and board.board[move[0]][move[1]].player != self.player:
                     valid_moves.append(move)
 
         return valid_moves

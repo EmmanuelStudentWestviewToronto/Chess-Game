@@ -26,7 +26,7 @@ class Queen(Piece):
             for move in directions:
                 if board.move_within_bounds(move):
                     if board.cell_is_piece(move):
-                        if board.board[move[0]][move[1]].player != board.turn:
+                        if board.board[move[0]][move[1]].player != self.player:
                             valid_moves.append(move)
                         break
                     valid_moves.append(move)

@@ -29,7 +29,7 @@ class Pawn(Piece):
             for i in range(2, len(moves_w)):
                 if board.move_within_bounds(moves_w[i]):
                     if (board.cell_is_piece((moves_w[i][0], moves_w[i][1])
-                                            ) and board.board[moves_w[i][0]][moves_w[i][1]].player != board.turn):
+                                            ) and board.board[moves_w[i][0]][moves_w[i][1]].player != self.player):
                         valid_moves.append(moves_w[i])
         else:
             if board.move_within_bounds(moves_b[0]):
@@ -42,7 +42,7 @@ class Pawn(Piece):
             for i in range(2, len(moves_b)):
                 if board.move_within_bounds(moves_b[i]):
                     if (board.cell_is_piece((moves_b[i][0], moves_b[i][1])
-                                            ) and board.board[moves_b[i][0]][moves_b[i][1]].player != board.turn):
+                                            ) and board.board[moves_b[i][0]][moves_b[i][1]].player != self.player):
                         valid_moves.append(moves_b[i])
 
         return valid_moves

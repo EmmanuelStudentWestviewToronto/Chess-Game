@@ -1,7 +1,6 @@
 from tkinter import Tk, Frame, Canvas, BOTH, TOP, Misc, Label
 import time
 import threading
-from pieces.piece import Piece
 from constants import WIDTH, HEIGHT, MARGIN, CELL_WIDTH, BACKGROUND_COLOR, WHITE, BLACK, SELECTED_COLOR
 
 

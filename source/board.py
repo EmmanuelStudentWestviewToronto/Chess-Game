@@ -1,3 +1,4 @@
+import copy
 from pieces.pawn import Pawn
 from pieces.king import King
 from pieces.knight import Knight
@@ -14,7 +15,6 @@ class Board:
         self.board = [[0 for c in range(self.rows)]
                       for r in range(self.columns)]
         self.turn = "white"  # white starts
-        self.turn_count = 0
         self.game_running = False
         self.is_winner = False
         self.white_time = timer
@@ -31,11 +31,17 @@ class Board:
         self.game_running = False
 
     def change_turn(self):
+        enemy_king = self.get_hostile_king()
+        enemy_king.put_outof_check()
+        enemy_threats = enemy_king.get_threats(self)
+
+        if enemy_king.position in enemy_threats:
+            enemy_king.put_incheck()
+
         if self.turn == "white":
             self.turn = "black"
         else:
             self.turn = "white"
-        self.turn_count += 1
 
     def move_within_bounds(self, move):
         if (-1 < move[0] < self.rows) and (-1 < move[1] < self.columns):
@@ -62,18 +68,61 @@ class Board:
                 if self.cell_is_piece((i, j)):
                     self.board[i][j].unselect()
 
+    def get_friendly_king(self):
+        for i in range(self.rows):
+            for j in range(self.columns):
+                if self.cell_is_piece((i, j)) and self.board[i][j].type == 5 and self.board[i][j].player == self.turn:
+                    return self.board[i][j]
+        return None
+
+    def get_hostile_king(self):
+        for i in range(self.rows):
+            for j in range(self.columns):
+                if self.cell_is_piece((i, j)) and self.board[i][j].type == 5 and self.board[i][j].player != self.turn:
+                    return self.board[i][j]
+        return None
+
+    def try_move(self, piece, move):
+        for i in range(self.rows):
+            for j in range(self.columns):
+                if self.cell_is_piece((i, j)):
+                    self.board[i][j].image_garbo = None
+        # piece.image_garbo is a tk PhotoImage object
+        # need to remove it before deepcopy
+
+        board_copy = copy.deepcopy(self)
+        board_copy.board[piece.x][piece.y] = 0
+        # queeening
+        if isinstance(piece, Pawn) and (move[1] == 0 or move[1] == 7):
+            piece = Queen(move[0], move[1], piece.player)
+        board_copy.board[move[0]][move[1]] = copy.deepcopy(piece)
+        board_copy.board[move[0]][move[1]].move(move)
+
+        king = board_copy.get_friendly_king()
+        threats = king.get_threats(board_copy)
+
+        if king.position in threats:
+            return False
+
+        return True
+
     def handle_piece_move(self, piece, destination):
-        self.board[piece.x][piece.y] = 0
-        piece.move((destination[0], destination[1]))
-        if isinstance(piece, Pawn) and piece.player == "white" and destination[1] == 0:
-            piece = Queen(destination[0], destination[1], "white")
-        if isinstance(piece, Pawn) and piece.player == "black" and destination[1] == 7:
-            piece = Queen(destination[0], destination[1], "black")
-        self.board[destination[0]][destination[1]] = piece
-        self.change_turn()
+        allowed = self.try_move(piece, destination)
+        if allowed:
+            king = self.get_friendly_king()
+            king.put_outof_check()
+            self.board[piece.x][piece.y] = 0
+            piece.move((destination[0], destination[1]))
+            # queeening
+            if isinstance(piece, Pawn) and (destination[1] == 0 or destination[1] == 7):
+                piece = Queen(destination[0], destination[1], piece.player)
+            self.board[destination[0]][destination[1]] = piece
+
+            self.change_turn()
+        else:
+            piece.unselect()
 
     def populate_board(self):
-        # black pieces
         self.board[0][0] = Rook(0, 0, "black")
         self.board[1][0] = Knight(1, 0, "black")
         self.board[2][0] = Bishop(2, 0, "black")
