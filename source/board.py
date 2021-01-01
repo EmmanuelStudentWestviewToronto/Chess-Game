@@ -92,11 +92,12 @@ class Board:
 
         board_copy = copy.deepcopy(self)
         board_copy.board[piece.x][piece.y] = 0
-        # queeening
-        if isinstance(piece, Pawn) and (move[1] == 0 or move[1] == 7):
-            piece = Queen(move[0], move[1], piece.player)
         board_copy.board[move[0]][move[1]] = copy.deepcopy(piece)
         board_copy.board[move[0]][move[1]].move(move)
+        # queeening
+        if isinstance(board_copy.board[move[0]][move[1]], Pawn) and (move[1] == 0 or move[1] == 7):
+            board_copy.board[move[0]][move[1]] = Queen(
+                move[0], move[1], piece.player)
 
         king = board_copy.get_friendly_king()
         threats = king.get_threats(board_copy)
