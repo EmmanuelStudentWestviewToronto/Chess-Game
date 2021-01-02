@@ -1,10 +1,12 @@
 # Chess-Game
-Chess game created in python
+Chess game created in python!
 
-99% working
-- Todo:
+Fully functional chess game. Used tkinter for the GUI- no 3rd party modules required!
+
+
+
+- Todo in the future:
   - en passant moves https://support.chess.com/article/683-what-is-en-passant
-  - end the game on check mate
   - AI(soon-ish) 
     - could take abit. need to explore minimax algorithm and optimizations(like ab-pruning etc.)
 
