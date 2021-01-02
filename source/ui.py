@@ -1,4 +1,4 @@
-from tkinter import Tk, Frame, Canvas, BOTH, TOP, Misc, Label, Button
+from tkinter import Tk, Frame, Canvas, BOTH, TOP, Misc, Label, Button, FIRST
 import time
 import threading
 from constants import WIDTH, HEIGHT, MARGIN, CELL_WIDTH, BACKGROUND_COLOR, WHITE, BLACK, SELECTED_COLOR
@@ -22,11 +22,11 @@ class ChessUI(Frame):
                              background=BACKGROUND_COLOR)
         self.canvas.pack(fill=BOTH, side=TOP)
 
-        self.wtime_label = Label(self.canvas, text="Time: 00:00", font=(
+        self.wtime_label = Label(self.canvas, text=f"Time: {self.board.white_time//60}:00", font=(
             'comicsans', 20), background=BACKGROUND_COLOR)
         self.wtime_label.place(x=WIDTH-MARGIN*2-10, y=HEIGHT-MARGIN//2-20)
 
-        self.btime_label = Label(self.canvas, text="Time: 00:00", font=(
+        self.btime_label = Label(self.canvas, text=f"Time: {self.board.black_time//60}:00", font=(
             'comicsans', 20), background=BACKGROUND_COLOR)
         self.btime_label.place(x=WIDTH-MARGIN*2-10, y=MARGIN//2-20)
 
@@ -84,10 +84,10 @@ class ChessUI(Frame):
             y_end_h = MARGIN + i*CELL_WIDTH
             # horizontal lines
             self.canvas.create_line(
-                x_start_h, y_start_h, x_end_h, y_end_h, fill="BLACK", width=2)
+                x_start_h, y_start_h, x_end_h, y_end_h, fill="BLACK", width=3)
             # vertical lines
             self.canvas.create_line(
-                x_start, y_start, x_end, y_end, fill="BLACK", width=2)
+                x_start, y_start, x_end, y_end, fill="BLACK", width=3)
 
     def draw_squares(self):
         for i in range(self.board.rows):
@@ -110,6 +110,9 @@ class ChessUI(Frame):
                     if self.board.board[i][j].is_selected():
                         self.canvas.create_oval((MARGIN+x*CELL_WIDTH)+5, (MARGIN+y*CELL_WIDTH)+5,
                                                 (MARGIN+x*CELL_WIDTH)+CELL_WIDTH-5, (MARGIN+y*CELL_WIDTH)+CELL_WIDTH-5, outline=SELECTED_COLOR, tag="select_oval")
+                    if self.board.board[i][j].type == 5 and self.board.board[i][j].marked:
+                        self.canvas.create_line((MARGIN+x*CELL_WIDTH)+CELL_WIDTH//2-1, (MARGIN+y*CELL_WIDTH)+10, (
+                            MARGIN+x*CELL_WIDTH)+CELL_WIDTH//2-1, (MARGIN+y*CELL_WIDTH)-15, fill="#ff0000", arrow=FIRST, width=5)
 
     def draw_misc(self):
         self.canvas.delete("turn_text")

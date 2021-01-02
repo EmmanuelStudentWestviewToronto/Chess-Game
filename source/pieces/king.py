@@ -6,6 +6,7 @@ class King(Piece):
     def __init__(self, x, y, player):
         super().__init__(x=x, y=y, player=player)
         self.type = 5
+        self.marked = False
         self.incheck = False
         self.checkmate = False
         self.set_image()

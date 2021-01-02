@@ -112,9 +112,10 @@ class Board:
 
     def handle_piece_move(self, piece, destination):
         allowed = self.try_move(piece, destination)
+        king = self.get_friendly_king()
         if allowed:
-            king = self.get_friendly_king()
             king.put_outof_check()
+            king.marked = False
             self.board[piece.x][piece.y] = 0
             piece.move((destination[0], destination[1]))
             # queeening
@@ -125,8 +126,8 @@ class Board:
             self.change_turn()
         else:
             piece.unselect()
-            # create some output for the user why that move wasn't possible
-            # put attention on the king, flash it or something, idk...
+            # to indicante why we couldn't take the move
+            king.marked = True
 
     def populate_board(self):
         self.board[0][0] = Rook(0, 0, "black")
