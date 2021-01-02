@@ -1,7 +1,7 @@
 # Chess-Game
 Chess game created in python
 
-99% working
+90+% working
 - Todo:
   - en passant moves https://support.chess.com/article/683-what-is-en-passant
   - castle moves https://en.wikipedia.org/wiki/Castling
