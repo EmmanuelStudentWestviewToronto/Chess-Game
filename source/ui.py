@@ -118,7 +118,7 @@ class ChessUI(Frame):
                                 text=f"{self.board.turn} Turn".upper(), tag="turn_text", font="comicsans 30")
 
         self.giveup_button = Button(
-            self.canvas, text="Give up", font="comicsans 20", fg="#ff0000", command=self.end_game)
+            self.canvas, text="Give up", font="comicsans 20", fg="#ff0000", command=self.end_game, borderwidth=8)
         self.giveup_button.place(x=80, y=HEIGHT-70)
 
     def draw_moves(self, moves):
