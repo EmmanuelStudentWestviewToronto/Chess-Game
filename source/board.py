@@ -45,6 +45,41 @@ class Board:
             self.turn = "black"
         else:
             self.turn = "white"
+        if self.is_checkmate():
+            king = self.get_friendly_king()
+            if king.incheck:
+                king.checkmate = True
+                self.stop_game("black" if self.turn ==
+                               "white" else "white")
+            else:
+                self.stop_game("Draw...")
+
+    def is_checkmate(self):
+        for row in self.board:
+            for element in row:
+                if element != 0 and element.player == self.turn:
+                    if not element.type == 5:
+                        moves = element.get_valid_moves(self)
+                        for move in moves:
+                            allowed = self.try_move(element, move)
+                            if allowed:
+                                return False
+                    else:
+                        king_moves, castle_moves = element.get_valid_moves(
+                            self)
+                        for move in king_moves:
+                            allowed = self.try_move(element, move)
+                            if allowed:
+                                return False
+                        if len(castle_moves) > 0:
+                            for castle_move in castle_moves:
+                                allowed = self.try_move(
+                                    element, castle_move[0])
+                                allowed2 = self.try_move(
+                                    element, castle_move[1])
+                                if (allowed and allowed2):
+                                    return False
+        return True
 
     def move_within_bounds(self, move):
         if (-1 < move[0] < self.rows) and (-1 < move[1] < self.columns):

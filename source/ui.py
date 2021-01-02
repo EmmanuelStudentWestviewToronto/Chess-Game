@@ -61,11 +61,12 @@ class ChessUI(Frame):
         else:
             self.draw_grid()
             self.draw_squares()
+            self.draw_pieces()
             end_canvas = Canvas(
-                self, width=WIDTH-100, height=HEIGHT//6, background="#444444")
+                self, width=WIDTH-100, height=HEIGHT//6-20, background="#444444")
 
             end_canvas.create_text(350, 60,
-                                   text=f"{self.board.winner} won!".upper(), font="comicsans 36", fill="#ffffff")
+                                   text=f"Winner: {self.board.winner} !".upper(), font="comicsans 36", fill="#ffffff")
             end_canvas.place(x=50, y=HEIGHT//2.5)
             Misc.lift(end_canvas)
 
@@ -101,6 +102,7 @@ class ChessUI(Frame):
                     x_start, y_start, x_end, y_end, fill=fill_color)
 
     def draw_pieces(self):
+        self.canvas.delete("marked-arrow")
         for i in range(self.board.rows):
             for j in range(self.board.columns):
                 if self.board.cell_is_piece((i, j)):
@@ -112,7 +114,7 @@ class ChessUI(Frame):
                                                 (MARGIN+x*CELL_WIDTH)+CELL_WIDTH-5, (MARGIN+y*CELL_WIDTH)+CELL_WIDTH-5, outline=SELECTED_COLOR, tag="select_oval")
                     if self.board.board[i][j].type == 5 and self.board.board[i][j].marked:
                         self.canvas.create_line((MARGIN+x*CELL_WIDTH)+CELL_WIDTH//2-1, (MARGIN+y*CELL_WIDTH)+10, (
-                            MARGIN+x*CELL_WIDTH)+CELL_WIDTH//2-1, (MARGIN+y*CELL_WIDTH)-15, fill="#ff0000", arrow=FIRST, width=5)
+                            MARGIN+x*CELL_WIDTH)+CELL_WIDTH//2-1, (MARGIN+y*CELL_WIDTH)-15, fill="#ff0000", arrow=FIRST, width=5, tag="marked-arrow")
 
     def draw_misc(self):
         self.canvas.delete("turn_text")
@@ -135,8 +137,6 @@ class ChessUI(Frame):
                              "white" else "white")
         self.canvas.delete("turn_text")
         self.canvas.unbind("<Button-1>")
-        self.wtime_label.configure(fg=BACKGROUND_COLOR)
-        self.btime_label.configure(fg=BACKGROUND_COLOR)
         self.giveup_button.destroy()
         self.draw_board()
 
