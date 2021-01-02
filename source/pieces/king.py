@@ -42,24 +42,25 @@ class King(Piece):
 
     def get_valid_moves(self, board):
         valid_moves = []
+        valid_castlemoves = []
         moves = [(self.x, self.y-1), (self.x+1, self.y-1), (self.x+1, self.y+1  # up, up+left/right
                                                             ),
                  (self.x-1, self.y), (self.x+1, self.y  # left, right
                                       ),
                  (self.x, self.y+1), (self.x-1, self.y-1), (self.x-1, self.y+1)]  # down, down+left/right
-        # Todo castle
-        # castle_moves = [(self.x-2, self.y), (self.x+2, self.y)  # queenside, kingside
-        #                 ]
+        castle_moves = [[(self.x-1, self.y), (self.x-2, self.y), "queen"],  # queenside
+                        [(self.x+1, self.y), (self.x+2, self.y), "king"]  # kingside
+                        ]
 
-        # if self.move_counter == 0 and not self.incheck:
-        #     if isinstance(board.board[self.x-4][self.y], Rook):
-        #         if board.board[self.x-4][self.y].player == self.player and board.board[self.x-4][self.y].move_counter == self.move_counter:
-        #             if board.board[self.x-1][self.y] == 0 and board.board[self.x-2][self.y] == 0 and board.board[self.x-3][self.y] == 0:
-        #                 valid_moves.append(castle_moves[0])
-        #     if isinstance(board.board[self.x+3][self.y], Rook):
-        #         if board.board[self.x+3][self.y].player == self.player and board.board[self.x+3][self.y].move_counter == self.move_counter:
-        #             if board.board[self.x+1][self.y] == 0 and board.board[self.x+2][self.y] == 0:
-        #                 valid_moves.append(castle_moves[1])
+        if self.move_counter == 0 and not self.incheck:
+            if isinstance(board.board[self.x-4][self.y], Rook):
+                if board.board[self.x-4][self.y].player == self.player and board.board[self.x-4][self.y].move_counter == self.move_counter:
+                    if board.board[self.x-1][self.y] == 0 and board.board[self.x-2][self.y] == 0 and board.board[self.x-3][self.y] == 0:
+                        valid_castlemoves.append(castle_moves[0])
+            if isinstance(board.board[self.x+3][self.y], Rook):
+                if board.board[self.x+3][self.y].player == self.player and board.board[self.x+3][self.y].move_counter == self.move_counter:
+                    if board.board[self.x+1][self.y] == 0 and board.board[self.x+2][self.y] == 0:
+                        valid_castlemoves.append(castle_moves[1])
 
         for move in moves:
             if board.move_within_bounds(move):
@@ -68,4 +69,4 @@ class King(Piece):
                 if (board.cell_is_piece(move)) and board.board[move[0]][move[1]].player != self.player:
                     valid_moves.append(move)
 
-        return valid_moves
+        return valid_moves, valid_castlemoves

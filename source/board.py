@@ -129,6 +129,32 @@ class Board:
             # to indicante why we couldn't take the move
             king.marked = True
 
+    def handle_castle_move(self, king_piece, castle_move):
+        allowed = self.try_move(king_piece, castle_move[0])
+        allowed1 = self.try_move(king_piece, castle_move[1])
+        if (allowed and allowed1):
+            king_piece.put_outof_check()
+            king_piece.marked = False
+            self.board[king_piece.x][king_piece.y] = 0
+            king_piece.move((castle_move[1][0], castle_move[1][1]))
+            self.board[castle_move[1][0]][castle_move[1][1]] = king_piece
+
+            if castle_move[2] == "queen":
+                temp = self.board[king_piece.x-2][king_piece.y]
+                temp.move((king_piece.x+1, king_piece.y))
+                self.board[king_piece.x+1][king_piece.y] = temp
+                self.board[king_piece.x-2][king_piece.y] = 0
+            if castle_move[2] == "king":
+                temp = self.board[king_piece.x+1][king_piece.y]
+                temp.move((king_piece.x-1, king_piece.y))
+                self.board[king_piece.x-1][king_piece.y] = temp
+                self.board[king_piece.x+1][king_piece.y] = 0
+            self.change_turn()
+        else:
+            king_piece.unselect()
+            # to indicante why we couldn't take the move
+            king_piece.marked = True
+
     def populate_board(self):
         self.board[0][0] = Rook(0, 0, "black")
         self.board[1][0] = Knight(1, 0, "black")

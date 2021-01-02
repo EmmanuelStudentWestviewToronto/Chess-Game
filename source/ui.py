@@ -166,17 +166,31 @@ class ChessUI(Frame):
         return formatted_string
 
     def initiate_piece_move(self, x, y):
-        temp = self.board.get_selected_piece()
-        if temp is not None:
-            valid = temp.get_valid_moves(self.board)
-            if (x, y) in valid:
-                self.board.handle_piece_move(
-                    temp, (x, y))
-                try:
-                    self.t.start()
-                except RuntimeError:
-                    pass
-                self.draw_board()
+        piece = self.board.get_selected_piece()
+        if piece is not None:
+            if not piece.type == 5:  # if it's not a king
+                valid_moves = piece.get_valid_moves(self.board)
+                if (x, y) in valid_moves:
+                    self.board.handle_piece_move(
+                        piece, (x, y))
+            else:
+                valid_kingmoves, valid_castle_moves = piece.get_valid_moves(
+                    self.board)
+                if (x, y) in valid_kingmoves:
+                    self.board.handle_piece_move(
+                        piece, (x, y))
+                elif len(valid_castle_moves) > 0 and ((x, y) == valid_castle_moves[0][1] or (x, y) == valid_castle_moves[1][1]):
+                    if (x, y) == valid_castle_moves[0][1]:
+                        self.board.handle_castle_move(
+                            piece, valid_castle_moves[0])
+                    else:
+                        self.board.handle_castle_move(
+                            piece, valid_castle_moves[1])
+            try:
+                self.t.start()
+            except RuntimeError:
+                pass
+            self.draw_board()
         # do nothing if no piece is selected
 
     def clicked(self, event):
