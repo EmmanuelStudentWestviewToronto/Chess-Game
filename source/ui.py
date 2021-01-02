@@ -1,4 +1,4 @@
-from tkinter import Tk, Frame, Canvas, BOTH, TOP, Misc, Label
+from tkinter import Tk, Frame, Canvas, BOTH, TOP, Misc, Label, Button
 import time
 import threading
 from constants import WIDTH, HEIGHT, MARGIN, CELL_WIDTH, BACKGROUND_COLOR, WHITE, BLACK, SELECTED_COLOR
@@ -57,19 +57,17 @@ class ChessUI(Frame):
             self.draw_grid()
             self.draw_squares()
             self.draw_pieces()
-            self.draw_labels()
+            self.draw_misc()
         else:
-            self.canvas.unbind("<Button-1>")
-            winner = "black" if self.board.white_time <= 0 else "white"
             self.draw_grid()
             self.draw_squares()
-            self.end_canvas = Canvas(
+            end_canvas = Canvas(
                 self, width=WIDTH-100, height=HEIGHT//6, background="#444444")
 
-            self.end_canvas.create_text(350, 60,
-                                        text=f"{winner} won!".upper(), font="comicsans 36", fill="#ffffff")
-            self.end_canvas.place(x=50, y=HEIGHT//2.5)
-            Misc.lift(self.end_canvas)
+            end_canvas.create_text(350, 60,
+                                   text=f"{self.board.winner} won!".upper(), font="comicsans 36", fill="#ffffff")
+            end_canvas.place(x=50, y=HEIGHT//2.5)
+            Misc.lift(end_canvas)
 
         self.update()
 
@@ -113,17 +111,31 @@ class ChessUI(Frame):
                         self.canvas.create_oval((MARGIN+x*CELL_WIDTH)+5, (MARGIN+y*CELL_WIDTH)+5,
                                                 (MARGIN+x*CELL_WIDTH)+CELL_WIDTH-5, (MARGIN+y*CELL_WIDTH)+CELL_WIDTH-5, outline=SELECTED_COLOR, tag="select_oval")
 
-    def draw_labels(self):
+    def draw_misc(self):
         self.canvas.delete("turn_text")
         # turn text
         self.canvas.create_text(WIDTH//2, HEIGHT-MARGIN//2,
                                 text=f"{self.board.turn} Turn".upper(), tag="turn_text", font="comicsans 30")
+
+        self.giveup_button = Button(
+            self.canvas, text="Give up", font="comicsans 20", fg="#ff0000", command=self.end_game)
+        self.giveup_button.place(x=80, y=HEIGHT-70)
 
     def draw_moves(self, moves):
         if len(moves) > 0:
             for move in moves:
                 self.canvas.create_oval(MARGIN+move[0]*CELL_WIDTH+30, MARGIN+move[1]*CELL_WIDTH+30,
                                         MARGIN+move[0]*CELL_WIDTH+CELL_WIDTH-30, MARGIN+move[1]*CELL_WIDTH+CELL_WIDTH-30, fill=SELECTED_COLOR)
+
+    def end_game(self):
+        self.board.stop_game("black" if self.board.turn ==
+                             "white" else "white")
+        self.canvas.delete("turn_text")
+        self.canvas.unbind("<Button-1>")
+        self.wtime_label.configure(fg=BACKGROUND_COLOR)
+        self.btime_label.configure(fg=BACKGROUND_COLOR)
+        self.giveup_button.destroy()
+        self.draw_board()
 
     def update_timer(self):
         if self.board.turn == "white":
@@ -147,65 +159,53 @@ class ChessUI(Frame):
                 formatted_string = f"Time: {str(minutes)}:0{str(seconds)}"
         else:
             formatted_string = "Times up!"
-            self.board.is_winner = True
-            self.board.stop_game()
-            self.draw_board()
+            self.end_game()
         return formatted_string
+
+    def initiate_piece_move(self, x, y):
+        temp = self.board.get_selected_piece()
+        if temp is not None:
+            valid = temp.get_valid_moves(self.board)
+            if (x, y) in valid:
+                self.board.handle_piece_move(
+                    temp, (x, y))
+                try:
+                    self.t.start()
+                except RuntimeError:
+                    pass
+                self.draw_board()
+        # do nothing if no piece is selected
 
     def clicked(self, event):
         x, y, = event.x, event.y
-        # if we clicked on the board
-        if MARGIN < x < WIDTH-MARGIN and MARGIN < y < WIDTH-MARGIN:
-            x_grid_position = int(x//CELL_WIDTH-1)
-            y_grid_position = int(y//CELL_WIDTH-1)
+        if MARGIN < x < WIDTH-MARGIN and MARGIN < y < WIDTH-MARGIN:  # if we clicked on the game-board
+            x_grid_pos = int(x//CELL_WIDTH-1)
+            y_grid_pos = int(y//CELL_WIDTH-1)
             # if we clicked on a piece
-            if self.board.cell_is_piece((x_grid_position, y_grid_position)):
-                # check if turn and piece color match
-                if self.board.board[x_grid_position][y_grid_position].player == self.board.turn:
-                    # it the piece is selected, we unselect it
-                    if self.board.board[x_grid_position][y_grid_position].is_selected():
-                        self.board.board[x_grid_position][y_grid_position].unselect(
-                        )
+            if self.board.cell_is_piece((x_grid_pos, y_grid_pos)):
+                # if turn and piece color match
+                if self.board.board[x_grid_pos][y_grid_pos].player == self.board.turn:
+                    # it the piece is selected...
+                    if self.board.board[x_grid_pos][y_grid_pos].is_selected():
+                        self.board.board[x_grid_pos][y_grid_pos].unselect(
+                        )  # ...we unselect it
                     # if the piece is not selected...
                     else:
                         # ... we unselect every other piece
                         self.board.unselect_all()
                         self.canvas.delete("select-oval")
-                        # and select the new one
-                        self.board.board[x_grid_position][y_grid_position].select(
-                        )
-                        moves = self.board.board[x_grid_position][y_grid_position].get_valid_moves(
-                            self.board)
-
+                        self.board.board[x_grid_pos][y_grid_pos].select(
+                        )  # and select the new one
+                        # moves = self.board.board[x_grid_pos][y_grid_pos].get_valid_moves(
+                        #     self.board)
                     self.draw_board()
-                    try:
-                        self.draw_moves(moves)
-                    except UnboundLocalError:
-                        pass
+                    # try:
+                    #     self.draw_moves(moves)
+                    # except UnboundLocalError:
+                    #     pass
                 # if turn and color don't match
                 else:
-                    # check if we have a piece selected atm
-                    temp = self.board.get_selected_piece()
-                    if temp is not None:
-                        valid = temp.get_valid_moves(self.board)
-                        if (x_grid_position, y_grid_position) in valid:
-                            self.board.handle_piece_move(
-                                temp, (x_grid_position, y_grid_position))
-                            try:
-                                self.t.start()
-                            except RuntimeError:
-                                pass
-                            self.draw_board()
-            # if we clicked on a free cell
+                    self.initiate_piece_move(x_grid_pos, y_grid_pos)
+            # not a piece
             else:
-                temp = self.board.get_selected_piece()
-                if temp is not None:
-                    valid = temp.get_valid_moves(self.board)
-                    if (x_grid_position, y_grid_position) in valid:
-                        self.board.handle_piece_move(
-                            temp, (x_grid_position, y_grid_position))
-                        try:
-                            self.t.start()
-                        except RuntimeError:
-                            pass
-                        self.draw_board()
+                self.initiate_piece_move(x_grid_pos, y_grid_pos)

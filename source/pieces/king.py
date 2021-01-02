@@ -1,4 +1,5 @@
 from .piece import Piece
+from .rook import Rook
 
 
 class King(Piece):
@@ -16,6 +17,11 @@ class King(Piece):
     def put_outof_check(self):
         self.incheck = False
         self.set_image()
+
+    def mate(self, board):
+        self.checkmate = True
+        board.is_winner = True
+        board.stop_game("black" if board.turn == "white" else "white")
 
     def set_image(self):
         color_num = 0 if self.player == "white" else 1
@@ -41,7 +47,18 @@ class King(Piece):
                                       ),
                  (self.x, self.y+1), (self.x-1, self.y-1), (self.x-1, self.y+1)]  # down, down+left/right
         # Todo castle
-        # caste_moves = [(self.x-2, self.y),(self.x+2,self.y)] # queenside, kingside
+        # castle_moves = [(self.x-2, self.y), (self.x+2, self.y)  # queenside, kingside
+        #                 ]
+
+        # if self.move_counter == 0 and not self.incheck:
+        #     if isinstance(board.board[self.x-4][self.y], Rook):
+        #         if board.board[self.x-4][self.y].player == self.player and board.board[self.x-4][self.y].move_counter == self.move_counter:
+        #             if board.board[self.x-1][self.y] == 0 and board.board[self.x-2][self.y] == 0 and board.board[self.x-3][self.y] == 0:
+        #                 valid_moves.append(castle_moves[0])
+        #     if isinstance(board.board[self.x+3][self.y], Rook):
+        #         if board.board[self.x+3][self.y].player == self.player and board.board[self.x+3][self.y].move_counter == self.move_counter:
+        #             if board.board[self.x+1][self.y] == 0 and board.board[self.x+2][self.y] == 0:
+        #                 valid_moves.append(castle_moves[1])
 
         for move in moves:
             if board.move_within_bounds(move):

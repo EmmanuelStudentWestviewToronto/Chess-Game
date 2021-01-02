@@ -17,6 +17,7 @@ class Board:
         self.turn = "white"  # white starts
         self.game_running = False
         self.is_winner = False
+        self.winner = None
         self.white_time = timer
         self.black_time = timer
         self.populate_board()
@@ -27,8 +28,10 @@ class Board:
     def run_game(self):
         self.game_running = True
 
-    def stop_game(self):
+    def stop_game(self, win):
         self.game_running = False
+        self.is_winner = True
+        self.winner = win
 
     def change_turn(self):
         enemy_king = self.get_hostile_king()
@@ -122,6 +125,8 @@ class Board:
             self.change_turn()
         else:
             piece.unselect()
+            # create some output for the user why that move wasn't possible
+            # put attention on the king, flash it or something, idk...
 
     def populate_board(self):
         self.board[0][0] = Rook(0, 0, "black")

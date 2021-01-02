@@ -16,6 +16,7 @@ class Piece(ABC):
         self.image = None
         self.image_garbo = None
         self.selected = False
+        self.move_counter = 0  # for castle moves
 
     @abstractmethod
     def get_valid_moves(self, board):
@@ -46,3 +47,4 @@ class Piece(ABC):
         self.position = destination
         self.x, self.y = self.position
         self.unselect()
+        self.move_counter += 1
