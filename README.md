@@ -12,8 +12,11 @@ Following the standard chess rules:
 - Time is set to 15 Minutes by default. You can change it by changing the number on line 4 in main.py
 
 ---------------------------------------------------------------------------------------------------------------------------------
-- Todo in the future:
+Not working:
   - en passant moves https://support.chess.com/article/683-what-is-en-passant
+
+---------------------------------------------------------------------------------------------------------------------------------
+- Todo in the future:
   - show a Restart game-button when the game ends(need to restart the programm atm)
   - Sounds
   - AI(soon-ish) 
