@@ -37,9 +37,9 @@ class ChessUI(Frame):
         self.start_canvas = Canvas(
             self, width=WIDTH-100, height=HEIGHT//6, background=STARTEND_BACKGROUND)
 
-        self.start_canvas.create_text(350, 30,
+        self.start_canvas.create_text(WIDTH//2-50, 35,
                                       text="Welcome to Chess!", font="comicsans 36", fill=WHITE)
-        self.start_canvas.create_text(350, 100,
+        self.start_canvas.create_text(WIDTH//2-50, 100,
                                       text="click here to start...", font="comicsans 30", fill=WHITE)
         self.start_canvas.place(x=50, y=HEIGHT//2.5)
         Misc.lift(self.start_canvas)
@@ -120,7 +120,7 @@ class ChessUI(Frame):
 
         end_canvas = Canvas(
             self, width=WIDTH-100, height=HEIGHT//6-20, background=STARTEND_BACKGROUND)
-        end_canvas.create_text(350, 60,
+        end_canvas.create_text(WIDTH//2-50, 60,
                                text=f"Winner: {self.board.winner} !".upper(), font="comicsans 36", fill=WHITE)
         end_canvas.place(x=50, y=HEIGHT//2.5)
         Misc.lift(end_canvas)
