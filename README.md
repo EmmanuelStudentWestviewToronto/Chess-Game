@@ -8,7 +8,7 @@ Fully functional chess game. Used tkinter for the GUI- no 3rd party modules requ
 Following the standard chess rules:
   https://en.wikipedia.org/wiki/Rules_of_chess
   
-- You can enable indicators for possible moves when a piece is selected by un-commenting lines 216-217 and 219-222 in ui.py
+
 - Time is set to 15 Minutes by default. You can change it by changing the number on line 4 in main.py
 
 ---------------------------------------------------------------------------------------------------------------------------------
