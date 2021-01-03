@@ -9,24 +9,25 @@ from pieces.piece import Piece
 
 
 class Board:
-    def __init__(self, timer):
+    def __init__(self, timer=900):
         self.rows = 8
         self.columns = 8
-        self.board = [[0 for c in range(self.rows)]
-                      for r in range(self.columns)]
+        self.board = [[]]
         self.turn = "white"  # white starts
         self.game_running = False
         self.is_winner = False
         self.winner = None
         self.white_time = timer
         self.black_time = timer
-        self.populate_board()
 
     def is_game_running(self):
         return True if self.game_running else False
 
     def run_game(self):
         self.game_running = True
+        self.board = [[0 for c in range(self.rows)]
+                      for r in range(self.columns)]
+        self.populate_board()
 
     def stop_game(self, win):
         self.game_running = False

@@ -26,8 +26,8 @@ class ChessUI(Frame):
             'comicsans', 20), background=BACKGROUND_COLOR)
         self.btime_label = Label(self.canvas, text=f"Time: {self.board.black_time//60}:00", font=(
             'comicsans', 20), background=BACKGROUND_COLOR)
-        self.wtime_label.place(x=WIDTH-MARGIN*2-10, y=HEIGHT-MARGIN//2-20)
-        self.btime_label.place(x=WIDTH-MARGIN*2-10, y=MARGIN//2-20)
+        self.wtime_label.place(x=WIDTH-MARGIN*2-65, y=HEIGHT-MARGIN//2-30)
+        self.btime_label.place(x=WIDTH-MARGIN*2-65, y=MARGIN//2-5)
 
         self.draw_start_screen()
 
@@ -37,8 +37,10 @@ class ChessUI(Frame):
         self.start_canvas = Canvas(
             self, width=WIDTH-100, height=HEIGHT//6, background=STARTEND_BACKGROUND)
 
-        self.start_canvas.create_text(350, 60,
-                                      text="Click here to start...", font="comicsans 36", fill=WHITE)
+        self.start_canvas.create_text(350, 30,
+                                      text="Welcome to Chess!", font="comicsans 36", fill=WHITE)
+        self.start_canvas.create_text(350, 100,
+                                      text="click here to start...", font="comicsans 30", fill=WHITE)
         self.start_canvas.place(x=50, y=HEIGHT//2.5)
         Misc.lift(self.start_canvas)
         self.start_canvas.bind("<Button-1>", self.load_gameui)
@@ -58,15 +60,7 @@ class ChessUI(Frame):
             self.draw_pieces()
             self.draw_misc()
         else:
-            self.draw_grid()
-            self.draw_squares()
-            self.draw_pieces()
-            end_canvas = Canvas(
-                self, width=WIDTH-100, height=HEIGHT//6-20, background=STARTEND_BACKGROUND)
-            end_canvas.create_text(350, 60,
-                                   text=f"Winner: {self.board.winner} !".upper(), font="comicsans 36", fill=WHITE)
-            end_canvas.place(x=50, y=HEIGHT//2.5)
-            Misc.lift(end_canvas)
+            self.draw_game_end()
         self.update()
 
     def draw_grid(self):
@@ -117,11 +111,23 @@ class ChessUI(Frame):
             self.canvas, text="Give up", font="comicsans 20", fg="#ff0000", command=self.end_game, borderwidth=8)
         self.giveup_button.place(x=80, y=HEIGHT-70)
 
+    def draw_game_end(self):
+        self.draw_grid()
+        self.draw_squares()
+        self.draw_pieces()
+        self.canvas.delete("turn_text")
+        self.canvas.unbind("<Button-1>")
+
+        end_canvas = Canvas(
+            self, width=WIDTH-100, height=HEIGHT//6-20, background=STARTEND_BACKGROUND)
+        end_canvas.create_text(350, 60,
+                               text=f"Winner: {self.board.winner} !".upper(), font="comicsans 36", fill=WHITE)
+        end_canvas.place(x=50, y=HEIGHT//2.5)
+        Misc.lift(end_canvas)
+
     def end_game(self):
         self.board.stop_game("black" if self.board.turn ==
                              "white" else "white")
-        self.canvas.delete("turn_text")
-        self.canvas.unbind("<Button-1>")
         self.giveup_button.destroy()
         self.draw_board()
 
