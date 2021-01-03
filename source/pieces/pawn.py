@@ -14,9 +14,9 @@ class Pawn(Piece):
     def get_valid_moves(self, board):
         valid_moves = []
         moves_w = [(self.x, self.y-1), (self.x, self.y-2),
-                   (self.x-1, self.y-1), (self.x + 1, self.y - 1)]
+                   (self.x-1, self.y-1), (self.x + 1, self.y-1)]
         moves_b = [(self.x, self.y+1), (self.x, self.y+2),
-                   (self.x-1, self.y+1), (self.x + 1, self.y + 1)]
+                   (self.x-1, self.y+1), (self.x + 1, self.y+1)]
 
         if self.player == "white":
             if board.move_within_bounds(moves_w[0]):

@@ -45,12 +45,11 @@ class Board:
             self.turn = "black"
         else:
             self.turn = "white"
+
         if self.is_checkmate():
             king = self.get_friendly_king()
             if king.incheck:
-                king.checkmate = True
-                self.stop_game("black" if self.turn ==
-                               "white" else "white")
+                king.mate(self)
             else:
                 self.stop_game("Draw...")
 
@@ -58,7 +57,7 @@ class Board:
         for row in self.board:
             for element in row:
                 if element != 0 and element.player == self.turn:
-                    if not element.type == 5:
+                    if not element.get_type() == 5:
                         moves = element.get_valid_moves(self)
                         for move in moves:
                             allowed = self.try_move(element, move)
@@ -109,14 +108,14 @@ class Board:
     def get_friendly_king(self):
         for i in range(self.rows):
             for j in range(self.columns):
-                if self.cell_is_piece((i, j)) and self.board[i][j].type == 5 and self.board[i][j].player == self.turn:
+                if self.cell_is_piece((i, j)) and self.board[i][j].get_type() == 5 and self.board[i][j].player == self.turn:
                     return self.board[i][j]
         return None
 
     def get_hostile_king(self):
         for i in range(self.rows):
             for j in range(self.columns):
-                if self.cell_is_piece((i, j)) and self.board[i][j].type == 5 and self.board[i][j].player != self.turn:
+                if self.cell_is_piece((i, j)) and self.board[i][j].get_type() == 5 and self.board[i][j].player != self.turn:
                     return self.board[i][j]
         return None
 
@@ -125,8 +124,7 @@ class Board:
             for j in range(self.columns):
                 if self.cell_is_piece((i, j)):
                     self.board[i][j].image_garbo = None
-        # piece.image_garbo is a tk PhotoImage object
-        # need to remove it before deepcopy
+        # piece.image_garbo is a tk PhotoImage object. need to remove it before deepcopy
 
         board_copy = copy.deepcopy(self)
         board_copy.board[piece.x][piece.y] = 0
@@ -139,10 +137,8 @@ class Board:
 
         king = board_copy.get_friendly_king()
         threats = king.get_threats(board_copy)
-
         if king.position in threats:
             return False
-
         return True
 
     def handle_piece_move(self, piece, destination):
@@ -161,12 +157,12 @@ class Board:
             self.change_turn()
         else:
             piece.unselect()
-            # to indicante why we couldn't take the move
-            king.marked = True
+            king.marked = True  # to indicante why we couldn't take the move
 
     def handle_castle_move(self, king_piece, castle_move):
         allowed = self.try_move(king_piece, castle_move[0])
         allowed1 = self.try_move(king_piece, castle_move[1])
+
         if (allowed and allowed1):
             king_piece.put_outof_check()
             king_piece.marked = False
@@ -187,8 +183,7 @@ class Board:
             self.change_turn()
         else:
             king_piece.unselect()
-            # to indicante why we couldn't take the move
-            king_piece.marked = True
+            king_piece.marked = True  # to indicante why we couldn't take the move
 
     def populate_board(self):
         self.board[0][0] = Rook(0, 0, "black")

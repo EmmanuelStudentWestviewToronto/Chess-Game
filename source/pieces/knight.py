@@ -16,7 +16,7 @@ class Knight(Piece):
         moves = [(self.x-1, self.y-2), (self.x+1, self.y-2),  # up and left/right
                  (self.x-1, self.y+2), (self.x+1, self.y+2),  # down and left/right
                  (self.x+2, self.y-1), (self.x+2, self.y+1),  # right and up/down
-                 (self.x-2, self.y-1), (self.x-2, self.y + 1)]  # left and up/down
+                 (self.x-2, self.y-1), (self.x-2, self.y+1)]  # left and up/down
 
         for move in moves:
             if board.move_within_bounds(move):

@@ -21,7 +21,6 @@ class King(Piece):
 
     def mate(self, board):
         self.checkmate = True
-        board.is_winner = True
         board.stop_game("black" if board.turn == "white" else "white")
 
     def set_image(self):
