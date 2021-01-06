@@ -19,7 +19,7 @@ class Piece(ABC):
         self.move_counter = 0  # for castle moves
 
     @abstractmethod
-    def get_valid_moves(self, board):
+    def get_valid_moves(self, game):
         pass
 
     @abstractmethod

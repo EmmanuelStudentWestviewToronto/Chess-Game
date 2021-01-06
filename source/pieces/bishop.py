@@ -11,7 +11,7 @@ class Bishop(Piece):
         color_num = 0 if self.player == "white" else 1
         self.image = f"img\\{color_num}0{self.type}.png"
 
-    def get_valid_moves(self, board):
+    def get_valid_moves(self, game):
         valid_moves = []
         moves = [[(self.x-j, self.y-j) for j in range(1, 8)],  # \ up-left
                  [(self.x+j, self.y-j) for j in range(1, 8)],  # / up-right
@@ -20,9 +20,9 @@ class Bishop(Piece):
                  ]
         for directions in moves:
             for move in directions:
-                if board.move_within_bounds(move):
-                    if board.cell_is_piece(move):
-                        if board.board[move[0]][move[1]].player != self.player:
+                if game.move_within_bounds(move):
+                    if game.cell_is_piece(move):
+                        if game.board[move[0]][move[1]].player != self.player:
                             valid_moves.append(move)
                         break
                     valid_moves.append(move)

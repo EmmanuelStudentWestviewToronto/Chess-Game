@@ -1,7 +1,7 @@
 from ui import ChessUI
-from board import Board
+from game import Game
 
-board = Board()  # time in seconds default=900. 900/60 = 15 Minutes
-ui = ChessUI(board)
+game = Game()  # time in seconds default=900. 900/60 = 15 Minutes
+ui = ChessUI(game)
 
 ui.mainloop()

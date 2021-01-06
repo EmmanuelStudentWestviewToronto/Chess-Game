@@ -8,7 +8,7 @@ from pieces.rook import Rook
 from pieces.piece import Piece
 
 
-class Board:
+class Game:
     def __init__(self, timer=900):
         self.rows = 8
         self.columns = 8
@@ -17,22 +17,31 @@ class Board:
         self.game_running = False
         self.is_winner = False
         self.winner = None
-        self.white_time = timer
-        self.black_time = timer
-
-    def is_game_running(self):
-        return True if self.game_running else False
+        self.timer_save = timer
+        self.white_time = 0
+        self.black_time = 0
 
     def run_game(self):
-        self.game_running = True
-        self.board = [[0 for c in range(self.rows)]
-                      for r in range(self.columns)]
+        self.reset_game()
         self.populate_board()
+        self.game_running = True
 
     def stop_game(self, win):
         self.game_running = False
         self.is_winner = True
         self.winner = win
+
+    def is_game_running(self):
+        return True if self.game_running else False
+
+    def reset_game(self):
+        self.white_time = self.timer_save
+        self.black_time = self.timer_save
+        self.is_winner = False
+        self.winner = None
+        self.turn = "white"
+        self.board = [[0 for c in range(self.rows)]
+                      for r in range(self.columns)]
 
     def change_turn(self):
         enemy_king = self.get_hostile_king()
