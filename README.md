@@ -13,10 +13,8 @@ Not working:
 
 ---------------------------------------------------------------------------------------------------------------------------------
 Todo in the future:
-  - show a Restart game-button when the game ends(need to restart the programm atm)
   - Sounds
-  - AI(soon-ish) 
-    - could take abit. need to explore minimax algorithm and optimizations(like ab-pruning etc.)
+  - AI
 
 ![Start_screen](assets/001.jpg "Start_screen")
 ![game](assets/002.jpg "Game")
